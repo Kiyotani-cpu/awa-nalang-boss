@@ -1,4 +1,5 @@
 using System;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 
@@ -71,18 +72,21 @@ namespace ARLocation
         void Start()
         {
             arPlaneManager = FindObjectOfType<ARPlaneManager>();
-            var arSessionOrigin = FindObjectOfType<ARSessionOrigin>();
+            // Attempt to find XR Origin (ensure it is named correctly in your scene)
+            var xrOrigin = FindObjectOfType<XROrigin>();  // Change this line
+
+            if (xrOrigin == null)
+            {
+                Debug.LogWarning("[AR+GPS][GroundHeight#Start]: XROrigin not present in the scene!");
+                return;
+            }
+
             mainCamera = ARLocationManager.Instance.MainCamera;
 
+            // If arPlaneManager is still null, create it under xrOrigin
             if (arPlaneManager == null)
             {
-                if (arSessionOrigin == null)
-                {
-                    Debug.LogWarning("[AR+GPS][GroundHeight#Start]: ARSessionOrigin not present in the scene!");
-                    return;
-                }
-
-                arPlaneManager = arSessionOrigin.gameObject.AddComponent<ARPlaneManager>();
+                arPlaneManager = xrOrigin.gameObject.AddComponent<ARPlaneManager>();
                 Utils.Misc.RequestPlaneDetectionMode(arPlaneManager, PlaneDetectionMode.Horizontal);
             }
 
@@ -100,6 +104,7 @@ namespace ARLocation
 
             UpdateObjectHeight();
         }
+
 
         void OnEnable()
         {
