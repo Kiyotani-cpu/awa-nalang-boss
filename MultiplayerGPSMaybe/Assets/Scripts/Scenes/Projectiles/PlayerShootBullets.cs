@@ -7,39 +7,31 @@ public class PlayerShootBullets : NetworkBehaviour
 {
     private PlayerInputControls _playerInputControls;
 
-
     private const float BULLET_DELAY = .2f;
     private const float SHOOTING_DELAY = .2f;
     private const float BULLET_SPEED = 5f;
-    private const float BULLET_ANGLE_AMPLYFY = .11f;
-    private const float BULLETSHOOTANGLEMAX = 25;
+    private const float BULLET_ANGLE_AMPLIFY = .11f;
+    private const float BULLET_SHOOT_ANGLE_MAX = 25;
 
-
-    private Transform bulletSpawnTransform;
-
-
+    [SerializeField] private Transform bulletSpawnTransform;  // Drag the child object here in the Inspector
     [SerializeField] private GameObject bulletPrefab;
 
     private float bulletShootAngle;
-
     private Coroutine ShootAutoCoroutine;
 
     public override void OnNetworkSpawn()
     {
-        bulletSpawnTransform = GetComponentInChildren<ShootBulletTransfomReference>().transform;
-
-
         if (GetComponent<NetworkObject>().IsOwner)
         {
             _playerInputControls = GetComponent<PlayerInputControls>();
 
             _playerInputControls.OnShootInput += StartShooting;
             _playerInputControls.OnShootInputCancelled += StopShooting;
-            _playerInputControls.OnShootAnglePerformed += PlayerInputControlsOnOnShootAnglePerformed;
+            _playerInputControls.OnShootAnglePerformed += PlayerInputControlsOnShootAnglePerformed;
         }
     }
 
-    private void PlayerInputControlsOnOnShootAnglePerformed(Vector2 angleValue)
+    private void PlayerInputControlsOnShootAnglePerformed(Vector2 angleValue)
     {
         float newAngle;
 
@@ -49,12 +41,11 @@ public class PlayerShootBullets : NetworkBehaviour
         }
         else
         {
-            newAngle = bulletShootAngle + angleValue.y * -BULLET_ANGLE_AMPLYFY;
-            newAngle = Mathf.Clamp(newAngle, -BULLETSHOOTANGLEMAX, BULLETSHOOTANGLEMAX);
+            newAngle = bulletShootAngle + angleValue.y * -BULLET_ANGLE_AMPLIFY;
+            newAngle = Mathf.Clamp(newAngle, -BULLET_SHOOT_ANGLE_MAX, BULLET_SHOOT_ANGLE_MAX);
         }
 
         bulletShootAngle = newAngle;
-
     }
 
     private void StopShooting()
@@ -75,8 +66,7 @@ public class PlayerShootBullets : NetworkBehaviour
         }
     }
 
-
-    IEnumerator ShootCoroutine()
+    private IEnumerator ShootCoroutine()
     {
         yield return new WaitForSeconds(SHOOTING_DELAY);
 
@@ -85,38 +75,36 @@ public class PlayerShootBullets : NetworkBehaviour
             StartShootBulletServerRpc(bulletShootAngle, NetworkManager.Singleton.LocalClientId);
             yield return new WaitForSeconds(BULLET_DELAY);
         }
-
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void StartShootBulletServerRpc(float bulletShootAngle, ulong callerID)
+    private void StartShootBulletServerRpc(float bulletShootAngle, ulong callerID)
     {
-        Quaternion rotation = Quaternion.Euler(bulletShootAngle, 0, 1);
-
+        // Set the rotation angle for the bullet spawn transform
+        Quaternion rotation = Quaternion.Euler(0, bulletShootAngle, 0);
         bulletSpawnTransform.localRotation = rotation;
 
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnTransform.position,
-            Quaternion.LookRotation(bulletSpawnTransform.up));
+        // Instantiate the bullet at the bulletSpawnTransform's position and rotation
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnTransform.position, bulletSpawnTransform.rotation);
 
         NetworkObject bulletNetworkObject = bullet.GetComponent<NetworkObject>();
+        bulletNetworkObject.Spawn();  // Spawn the bullet on the network
 
-        bulletNetworkObject.Spawn();
+        // Set ownership information on the bullet
         bullet.GetComponent<BulletData>().SetOwnershipServerRpc(callerID);
 
+        // Apply velocity to move the bullet forward
         Rigidbody bulletRigidBody = bullet.GetComponent<Rigidbody>();
-
-        bulletRigidBody.AddForce(bulletSpawnTransform.forward * BULLET_SPEED, ForceMode.VelocityChange);
-
+        bulletRigidBody.velocity = bulletSpawnTransform.forward * BULLET_SPEED;
     }
 
     public override void OnNetworkDespawn()
     {
-
         if (GetComponent<NetworkObject>().IsOwner)
         {
             _playerInputControls.OnShootInput -= StartShooting;
             _playerInputControls.OnShootInputCancelled -= StopShooting;
-            _playerInputControls.OnShootAnglePerformed -= PlayerInputControlsOnOnShootAnglePerformed;
+            _playerInputControls.OnShootAnglePerformed -= PlayerInputControlsOnShootAnglePerformed;
         }
     }
 }
