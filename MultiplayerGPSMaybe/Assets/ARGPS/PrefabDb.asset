@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PrefabDb
   m_EditorClassIdentifier: 
   Entries:
-  - MeshId: Gps
-    Prefab: {fileID: 2198125378339800612, guid: 987dd04d41b1fcf4a9ed5ade4d053c88, type: 3}
+  - MeshId: GO
+    Prefab: {fileID: 194904, guid: 445a5c29e7f715947b713a753f242af0, type: 3}

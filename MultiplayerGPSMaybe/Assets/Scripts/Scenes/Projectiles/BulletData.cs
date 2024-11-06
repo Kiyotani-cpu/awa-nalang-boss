@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class BulletData : NetworkBehaviour
 {
+    [SerializeField] private int damage = 10;
     private NetworkVariable<ulong> owner = new(999);
     private NetworkVariable<bool> isActiveSelf = new(true);
 
@@ -76,5 +77,9 @@ public class BulletData : NetworkBehaviour
                 SetBulletIsActiveServerRpc(false);
             }
         }
+    }
+    public int GetDamage()
+    {
+        return damage;
     }
 }
