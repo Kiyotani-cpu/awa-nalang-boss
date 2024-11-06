@@ -19,8 +19,8 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
         this.lifePoints = lifePoints;
         this.playerPlaced = playerPlaced;
     }
-    
-    
+
+
 
     public bool Equals(PlayerData other)
     {

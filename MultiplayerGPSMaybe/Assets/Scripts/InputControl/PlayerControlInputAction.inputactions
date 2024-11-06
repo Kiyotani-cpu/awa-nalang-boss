@@ -2,13 +2,31 @@
     "name": "PlayerControlInputAction",
     "maps": [
         {
-            "name": "PlayerControlMap",
+            "name": "PlayerControlsMap",
             "id": "f5823a54-aaec-4bb6-83e7-42ae840a23c7",
             "actions": [
                 {
                     "name": "Move",
                     "type": "Value",
                     "id": "1eddee4b-1c82-4a5a-b0b5-62b7888d615a",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "6e968bc9-e91e-4157-a35a-49e9f5eb2f5c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShootAngle",
+                    "type": "Value",
+                    "id": "f7d78e4b-6b60-45f1-9858-92c238104590",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -81,6 +99,28 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "36b6957f-4af5-4fb7-91a1-4187cdba817c",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "be967232-8a68-423a-8b22-297926d332c1",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootAngle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

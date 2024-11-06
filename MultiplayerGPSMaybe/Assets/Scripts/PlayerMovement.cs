@@ -9,7 +9,7 @@ using UnityEngine;
 public class PlayerMovement : NetworkBehaviour
 {
     private PlayerInputControls _playerInputControls;
-    private const float MOVE_SPEED = .04f;
+    private const float MOVE_SPEED = .08f;
     private const float MOVE_THRESHOLD = 0.01f;
 
     private const float LOOKATPOINT_DELTA = 2f;

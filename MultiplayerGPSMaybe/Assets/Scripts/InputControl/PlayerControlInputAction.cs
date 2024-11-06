@@ -24,13 +24,31 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
     ""name"": ""PlayerControlInputAction"",
     ""maps"": [
         {
-            ""name"": ""PlayerControlMap"",
+            ""name"": ""PlayerControlsMap"",
             ""id"": ""f5823a54-aaec-4bb6-83e7-42ae840a23c7"",
             ""actions"": [
                 {
                     ""name"": ""Move"",
                     ""type"": ""Value"",
                     ""id"": ""1eddee4b-1c82-4a5a-b0b5-62b7888d615a"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""6e968bc9-e91e-4157-a35a-49e9f5eb2f5c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShootAngle"",
+                    ""type"": ""Value"",
+                    ""id"": ""f7d78e4b-6b60-45f1-9858-92c238104590"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -103,15 +121,39 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""36b6957f-4af5-4fb7-91a1-4187cdba817c"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""be967232-8a68-423a-8b22-297926d332c1"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShootAngle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // PlayerControlMap
-        m_PlayerControlMap = asset.FindActionMap("PlayerControlMap", throwIfNotFound: true);
-        m_PlayerControlMap_Move = m_PlayerControlMap.FindAction("Move", throwIfNotFound: true);
+        // PlayerControlsMap
+        m_PlayerControlsMap = asset.FindActionMap("PlayerControlsMap", throwIfNotFound: true);
+        m_PlayerControlsMap_Move = m_PlayerControlsMap.FindAction("Move", throwIfNotFound: true);
+        m_PlayerControlsMap_Shoot = m_PlayerControlsMap.FindAction("Shoot", throwIfNotFound: true);
+        m_PlayerControlsMap_ShootAngle = m_PlayerControlsMap.FindAction("ShootAngle", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -170,53 +212,71 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // PlayerControlMap
-    private readonly InputActionMap m_PlayerControlMap;
-    private List<IPlayerControlMapActions> m_PlayerControlMapActionsCallbackInterfaces = new List<IPlayerControlMapActions>();
-    private readonly InputAction m_PlayerControlMap_Move;
-    public struct PlayerControlMapActions
+    // PlayerControlsMap
+    private readonly InputActionMap m_PlayerControlsMap;
+    private List<IPlayerControlsMapActions> m_PlayerControlsMapActionsCallbackInterfaces = new List<IPlayerControlsMapActions>();
+    private readonly InputAction m_PlayerControlsMap_Move;
+    private readonly InputAction m_PlayerControlsMap_Shoot;
+    private readonly InputAction m_PlayerControlsMap_ShootAngle;
+    public struct PlayerControlsMapActions
     {
         private @PlayerControlInputAction m_Wrapper;
-        public PlayerControlMapActions(@PlayerControlInputAction wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_PlayerControlMap_Move;
-        public InputActionMap Get() { return m_Wrapper.m_PlayerControlMap; }
+        public PlayerControlsMapActions(@PlayerControlInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_PlayerControlsMap_Move;
+        public InputAction @Shoot => m_Wrapper.m_PlayerControlsMap_Shoot;
+        public InputAction @ShootAngle => m_Wrapper.m_PlayerControlsMap_ShootAngle;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerControlsMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerControlMapActions set) { return set.Get(); }
-        public void AddCallbacks(IPlayerControlMapActions instance)
+        public static implicit operator InputActionMap(PlayerControlsMapActions set) { return set.Get(); }
+        public void AddCallbacks(IPlayerControlsMapActions instance)
         {
-            if (instance == null || m_Wrapper.m_PlayerControlMapActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_PlayerControlMapActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_PlayerControlsMapActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlayerControlsMapActionsCallbackInterfaces.Add(instance);
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @Shoot.started += instance.OnShoot;
+            @Shoot.performed += instance.OnShoot;
+            @Shoot.canceled += instance.OnShoot;
+            @ShootAngle.started += instance.OnShootAngle;
+            @ShootAngle.performed += instance.OnShootAngle;
+            @ShootAngle.canceled += instance.OnShootAngle;
         }
 
-        private void UnregisterCallbacks(IPlayerControlMapActions instance)
+        private void UnregisterCallbacks(IPlayerControlsMapActions instance)
         {
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @Shoot.started -= instance.OnShoot;
+            @Shoot.performed -= instance.OnShoot;
+            @Shoot.canceled -= instance.OnShoot;
+            @ShootAngle.started -= instance.OnShootAngle;
+            @ShootAngle.performed -= instance.OnShootAngle;
+            @ShootAngle.canceled -= instance.OnShootAngle;
         }
 
-        public void RemoveCallbacks(IPlayerControlMapActions instance)
+        public void RemoveCallbacks(IPlayerControlsMapActions instance)
         {
-            if (m_Wrapper.m_PlayerControlMapActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_PlayerControlsMapActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IPlayerControlMapActions instance)
+        public void SetCallbacks(IPlayerControlsMapActions instance)
         {
-            foreach (var item in m_Wrapper.m_PlayerControlMapActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_PlayerControlsMapActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_PlayerControlMapActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_PlayerControlsMapActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public PlayerControlMapActions @PlayerControlMap => new PlayerControlMapActions(this);
-    public interface IPlayerControlMapActions
+    public PlayerControlsMapActions @PlayerControlsMap => new PlayerControlsMapActions(this);
+    public interface IPlayerControlsMapActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
+        void OnShootAngle(InputAction.CallbackContext context);
     }
 }

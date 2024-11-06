@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.nianticlabs.lightship": {
-      "version": "file:D:/Users/Public/Documents/Lightship/3.3.0/ardk-upm-3.3.0.tgz",
+      "version": "file:C:/Users/MyPC/Downloads/drive-download-20241106T030208Z-001/ardk-upm-3.3.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
@@ -16,7 +16,7 @@
       }
     },
     "com.nianticlabs.lightship.sharedar": {
-      "version": "file:D:/Users/Public/Documents/Lightship/3.3.0/sharedar-upm-3.3.0.tgz",
+      "version": "file:C:/Users/MyPC/Downloads/drive-download-20241106T030208Z-001/sharedar-upm-3.3.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {

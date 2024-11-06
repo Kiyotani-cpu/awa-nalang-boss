@@ -10,7 +10,7 @@ public class AllPlayerDataManager : NetworkBehaviour
     public static AllPlayerDataManager Instance;
 
     private NetworkList<PlayerData> allPlayerData;
-    private const int LIFEPOINTS = 1;
+    private const int LIFEPOINTS = 4;
     private const int LIFEPOINTS_TO_REDUCE = 1;
 
     public event Action<ulong> OnPlayerDead;
@@ -72,7 +72,7 @@ public class AllPlayerDataManager : NetworkBehaviour
     void Start()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += AddNewClientToList;
-        
+        BulletData.OnHitPlayer += BulletDataOnOnHitPlayer;
         KillPlayer.OnKillPlayer += KillPlayerOnOnKillPlayer;
         RestartGame.OnRestartGame += RestartGameOnOnRestartGame;
     }
@@ -80,7 +80,7 @@ public class AllPlayerDataManager : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         NetworkManager.Singleton.OnClientConnectedCallback -= AddNewClientToList;
-        
+        BulletData.OnHitPlayer -= BulletDataOnOnHitPlayer;
         KillPlayer.OnKillPlayer -= KillPlayerOnOnKillPlayer;
         RestartGame.OnRestartGame -= RestartGameOnOnRestartGame;
     }
@@ -93,7 +93,8 @@ public class AllPlayerDataManager : NetworkBehaviour
         List<NetworkObject> playerObjects = FindObjectsOfType<PlayerMovement>()
             .Select(x => x.transform.GetComponent<NetworkObject>()).ToList();
 
-        
+        List<NetworkObject> bulletObjects = FindObjectsOfType<BulletData>()
+            .Select(x => x.transform.GetComponent<NetworkObject>()).ToList();
 
 
 
@@ -102,7 +103,10 @@ public class AllPlayerDataManager : NetworkBehaviour
             playerobj.Despawn();
         }
 
-        
+        foreach (var bulletObject in bulletObjects)
+        {
+            bulletObject.Despawn();
+        }
 
         ResetNetworkList();
     }
