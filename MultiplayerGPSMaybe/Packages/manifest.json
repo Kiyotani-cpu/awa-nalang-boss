@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.nianticlabs.lightship": "file:C:/Users/MyPC/Downloads/drive-download-20241106T030208Z-001/ardk-upm-3.3.0.tgz",
-    "com.nianticlabs.lightship.sharedar": "file:C:/Users/MyPC/Downloads/drive-download-20241106T030208Z-001/sharedar-upm-3.3.0.tgz",
+    "com.nianticlabs.lightship": "file:C:/Users/eo30e/Downloads/ardk-upm-3.3.0/package",
+    "com.nianticlabs.lightship.sharedar": "file:C:/Users/eo30e/Downloads/package",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.feature.development": "1.0.1",
