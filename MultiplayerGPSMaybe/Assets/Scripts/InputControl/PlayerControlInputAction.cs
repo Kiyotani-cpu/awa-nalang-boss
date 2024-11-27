@@ -53,6 +53,24 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Defend"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7271158-fb8f-482b-8285-f844f0ec3207"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""3c2e33aa-ff6b-4745-a65e-5ba399467667"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -143,6 +161,28 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
                     ""action"": ""ShootAngle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""688bca23-5a49-4830-a0de-89df53bb5d38"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Defend"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f359e2fd-c7df-42da-a61c-83f9c01d3d57"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -154,6 +194,8 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
         m_PlayerControlsMap_Move = m_PlayerControlsMap.FindAction("Move", throwIfNotFound: true);
         m_PlayerControlsMap_Shoot = m_PlayerControlsMap.FindAction("Shoot", throwIfNotFound: true);
         m_PlayerControlsMap_ShootAngle = m_PlayerControlsMap.FindAction("ShootAngle", throwIfNotFound: true);
+        m_PlayerControlsMap_Defend = m_PlayerControlsMap.FindAction("Defend", throwIfNotFound: true);
+        m_PlayerControlsMap_Attack = m_PlayerControlsMap.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -218,6 +260,8 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
     private readonly InputAction m_PlayerControlsMap_Move;
     private readonly InputAction m_PlayerControlsMap_Shoot;
     private readonly InputAction m_PlayerControlsMap_ShootAngle;
+    private readonly InputAction m_PlayerControlsMap_Defend;
+    private readonly InputAction m_PlayerControlsMap_Attack;
     public struct PlayerControlsMapActions
     {
         private @PlayerControlInputAction m_Wrapper;
@@ -225,6 +269,8 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
         public InputAction @Move => m_Wrapper.m_PlayerControlsMap_Move;
         public InputAction @Shoot => m_Wrapper.m_PlayerControlsMap_Shoot;
         public InputAction @ShootAngle => m_Wrapper.m_PlayerControlsMap_ShootAngle;
+        public InputAction @Defend => m_Wrapper.m_PlayerControlsMap_Defend;
+        public InputAction @Attack => m_Wrapper.m_PlayerControlsMap_Attack;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControlsMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -243,6 +289,12 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
             @ShootAngle.started += instance.OnShootAngle;
             @ShootAngle.performed += instance.OnShootAngle;
             @ShootAngle.canceled += instance.OnShootAngle;
+            @Defend.started += instance.OnDefend;
+            @Defend.performed += instance.OnDefend;
+            @Defend.canceled += instance.OnDefend;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
         }
 
         private void UnregisterCallbacks(IPlayerControlsMapActions instance)
@@ -256,6 +308,12 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
             @ShootAngle.started -= instance.OnShootAngle;
             @ShootAngle.performed -= instance.OnShootAngle;
             @ShootAngle.canceled -= instance.OnShootAngle;
+            @Defend.started -= instance.OnDefend;
+            @Defend.performed -= instance.OnDefend;
+            @Defend.canceled -= instance.OnDefend;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
         }
 
         public void RemoveCallbacks(IPlayerControlsMapActions instance)
@@ -278,5 +336,7 @@ public partial class @PlayerControlInputAction: IInputActionCollection2, IDispos
         void OnMove(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnShootAngle(InputAction.CallbackContext context);
+        void OnDefend(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }
