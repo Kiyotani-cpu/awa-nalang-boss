@@ -27,6 +27,12 @@ public class PlayerCombatHandler : NetworkBehaviour
     [SerializeField] private LayerMask enemyLayer; // Specify the enemy layer for collision detection
     [SerializeField] private Transform attackPoint; // Transform for where the attack originates (e.g., hand or weapon)
 
+    // Audio Clips
+    [SerializeField] private AudioClip attackSound;  // Attack sound
+    [SerializeField] private AudioClip shieldSound;  // Shield sound
+    [SerializeField] private AudioClip hitSound;     // Sound for hitting enemies
+    private AudioSource _audioSource;
+
     public override void OnNetworkSpawn()
     {
         if (GetComponent<NetworkObject>().IsOwner)
@@ -58,6 +64,9 @@ public class PlayerCombatHandler : NetworkBehaviour
         {
             _attackTransform = attackPoint;
         }
+
+        // Initialize AudioSource component
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void StartAttacking()
@@ -91,12 +100,28 @@ public class PlayerCombatHandler : NetworkBehaviour
         while (_isAttacking)  // Keep attacking as long as the flag is true
         {
             _animator.SetTrigger(AttackHash);  // Trigger attack animation
+            PlayAttackSound();  // Play attack sound
             PerformAttackServerRpc();  // Perform the attack on the server
             DetectEnemiesWithinRange();  // Check for enemies within range
             yield return new WaitForSeconds(ATTACK_DELAY);  // Wait for the attack delay before attacking again
         }
     }
 
+    private void PlayAttackSound()
+    {
+        if (_audioSource != null && attackSound != null)
+        {
+            _audioSource.PlayOneShot(attackSound);  // Play attack sound effect
+        }
+    }
+
+    private void PlayHitSound()
+    {
+        if (_audioSource != null && hitSound != null)
+        {
+            _audioSource.PlayOneShot(hitSound);  // Play hit sound effect
+        }
+    }
 
     [ServerRpc(RequireOwnership = false)]
     private void PerformAttackServerRpc()
@@ -117,6 +142,7 @@ public class PlayerCombatHandler : NetworkBehaviour
                 if (enemyHealth != null)
                 {
                     enemyHealth.TakeDamage(attackDamage); // Apply damage to enemy
+                    PlayHitSound();  // Play hit sound when the attack hits an enemy
                 }
             }
         }
@@ -130,6 +156,7 @@ public class PlayerCombatHandler : NetworkBehaviour
 
         // Play the shield lock animation
         _animator.SetTrigger(ShieldLockHash);
+        PlayShieldSound();  // Play shield sound
 
         StopAttacking(); // Ensure no attacks while defending
     }
@@ -142,6 +169,14 @@ public class PlayerCombatHandler : NetworkBehaviour
 
         // Transition back to idle when shield is released
         SetIdleState();
+    }
+
+    private void PlayShieldSound()
+    {
+        if (_audioSource != null && shieldSound != null)
+        {
+            _audioSource.PlayOneShot(shieldSound);  // Play shield sound effect
+        }
     }
 
     private void SetIdleState()

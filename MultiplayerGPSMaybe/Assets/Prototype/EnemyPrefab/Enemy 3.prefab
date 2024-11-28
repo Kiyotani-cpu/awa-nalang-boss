@@ -16,13 +16,13 @@ GameObject:
   - component: {fileID: 7492136314816291334}
   - component: {fileID: 4065203735903853760}
   - component: {fileID: 4629440604509442728}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy 3
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1557778574214384916
 Transform:
   m_ObjectHideFlags: 0
@@ -147,6 +147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   delay: 1.35
+  Damage: 10
   healthBarFill: {fileID: 6528382234865466146}
   enemyAnimator: {fileID: 7430087374911546115}
   moveSpeed: 3
@@ -293,6 +294,18 @@ PrefabInstance:
     - target: {fileID: 3288394064134837267, guid: 9e401e2534388844bbbbb608341430cd, type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 3288394064134837267, guid: 9e401e2534388844bbbbb608341430cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541419078746922904, guid: 9e401e2534388844bbbbb608341430cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7236585505219230882, guid: 9e401e2534388844bbbbb608341430cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

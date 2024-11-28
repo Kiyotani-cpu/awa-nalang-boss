@@ -11,29 +11,38 @@ public class PlayerHealth : NetworkBehaviour
 
     private bool isDefending = false;
 
-    [SerializeField] private HealthBar healthBar; // Reference to UI health bar (optional)
+    [Header("UI Components")]
+    [SerializeField] private Image healthBarFill;
+    [SerializeField] private Text healthText; // Optional: Display health values
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip hurtSound; // Sound to play when player gets hurt
+    private AudioSource audioSource;
 
     // NetworkVariable to synchronize health across clients
     private NetworkVariable<int> networkHealth = new NetworkVariable<int>(100);
 
     private PlayerCombatHandler _combatHandler;
 
-    // Event to notify when the player is killed
-    public static event Action<ulong> OnKillPlayer;
-
     public override void OnNetworkSpawn()
     {
-        if (IsOwner) // Only the owning player should manage their health
+        if (IsOwner)
         {
             currentHealth = maxHealth;
-            networkHealth.Value = currentHealth; // Sync health on spawn
+            networkHealth.Value = currentHealth;
             _combatHandler = GetComponent<PlayerCombatHandler>();
+            UpdateHealthUI();
+
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                Debug.LogWarning("AudioSource not found. Adding one.");
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
         }
 
-        // Register to listen to health changes from the network
         networkHealth.OnValueChanged += OnHealthChanged;
 
-        // Subscribe to the defend input events
         PlayerInputControls inputControls = GetComponent<PlayerInputControls>();
         if (inputControls != null)
         {
@@ -44,77 +53,82 @@ public class PlayerHealth : NetworkBehaviour
 
     private void OnHealthChanged(int oldValue, int newValue)
     {
-        // Update health on the UI for the player
-        if (healthBar != null)
+        if (IsOwner)
         {
-            healthBar.SetHealth(newValue, maxHealth);
+            currentHealth = newValue;
+            UpdateHealthUI();
         }
     }
 
     public void TakeDamage(int damage)
     {
-        if (!IsOwner) return; // Ensure only the owning player can take damage
-
-        Debug.Log($"Original damage: {damage}");
+        if (!IsOwner) return;
 
         if (isDefending)
         {
-            // If the player is defending, reduce the damage (shielding effect)
-            damage = Mathf.FloorToInt(damage * 0.5f); // 50% damage reduction when defending
-            Debug.Log($"Shielding active! Reduced damage: {damage}");
-        }
-        else
-        {
-            Debug.Log("No shield active, damage remains the same.");
+            damage = Mathf.FloorToInt(damage * 0.5f);
         }
 
-        // Apply the damage to current health
         currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Ensure health doesn't go below 0
-
-        // Sync health change with the network
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         networkHealth.Value = currentHealth;
 
-        Debug.Log($"Current health after damage: {currentHealth}");
+        PlayHurtSound(); // Play hurt sound when taking damage
 
         if (currentHealth <= 0)
         {
             Die();
         }
+
+        UpdateHealthUI();
+    }
+
+    private void PlayHurtSound()
+    {
+        if (hurtSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(hurtSound);
+        }
+    }
+
+    private void UpdateHealthUI()
+    {
+        if (healthBarFill != null)
+        {
+            healthBarFill.fillAmount = (float)currentHealth / maxHealth;
+        }
+
+        if (healthText != null)
+        {
+            healthText.text = $"{currentHealth}/{maxHealth}";
+        }
     }
 
     private void Die()
     {
-        // Handle player death logic (e.g., respawn, game over, etc.)
         Debug.Log("Player died!");
-
         RestartQuitCanvas.gameObject.SetActive(true);
     }
 
     public void StartDefending()
     {
         isDefending = true;
-        Debug.Log("Player is defending: " + isDefending); // Debugging the defense state
     }
 
     public void StopDefending()
     {
         isDefending = false;
-        Debug.Log("Player stopped defending: " + isDefending); // Debugging the defense state
     }
 
-    // You can also add a method to regenerate health over time (if needed)
     public void RegenerateHealth(int amount)
     {
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
-
-        // Sync health change with the network
         networkHealth.Value = currentHealth;
+        UpdateHealthUI();
     }
 
     public override void OnNetworkDespawn()
     {
-        // Handle cleanup if necessary
-        networkHealth.OnValueChanged -= OnHealthChanged; // Unsubscribe from the event
+        networkHealth.OnValueChanged -= OnHealthChanged;
     }
 }
