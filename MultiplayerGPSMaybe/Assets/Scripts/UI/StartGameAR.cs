@@ -9,7 +9,8 @@ using UnityEngine.UI;
 public class StartGameAR : MonoBehaviour
 {
     [SerializeField] private SharedSpaceManager _sharedSpaceManager;
-    private const int MAX_AMOUNT_CLIENTS_ROOM = 5;
+    public static int MAX_AMOUNT_CLIENTS_ROOM = 4; // Example value
+
 
     [SerializeField] private Texture2D _targetImage;
     [SerializeField] private float _targetImageSize;
@@ -131,6 +132,4 @@ public class StartGameAR : MonoBehaviour
         isHost = false;
         OnJoinSharedSpaceClient?.Invoke();
     }
-
-
 }
