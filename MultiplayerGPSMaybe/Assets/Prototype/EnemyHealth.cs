@@ -5,21 +5,24 @@ using Unity.Netcode;
 public class EnemyHealth : NetworkBehaviour
 {
     [SerializeField] private int maxHealth = 100;
-    private NetworkVariable<int> currentHealth = new NetworkVariable<int>();  // Initialize here
-    [SerializeField] private float delay = 1.51f;
-    [SerializeField] private int Damage = 10;
-    // Health Bar Reference
-    [SerializeField] private Image healthBarFill;  // Reference to the UI Image (fill)
+    private NetworkVariable<int> currentHealth = new NetworkVariable<int>();
 
-    // Reference to the Animator
+    [SerializeField] private float delay = 1.51f;
+    [SerializeField] private int damage = 10;
+    [SerializeField] private string canvaName;
+    [SerializeField] private Image healthBarFill;
+
     [SerializeField] private Animator enemyAnimator;
 
-    // Movement settings
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float attackRange = 2f;
     private Transform playerTransform;
 
-    // Combat settings
+    [SerializeField] private float attackCooldown = 1f;
+    private float lastAttackTime = -1f;
+
+    [SerializeField] private float minimumAttackDistance = 2f;
+
     private bool isWalking = false;
     private bool isAttacking = false;
     private bool isDead = false;
@@ -29,41 +32,42 @@ public class EnemyHealth : NetworkBehaviour
     private const string DIE_ANIMATION = "IsDead";
     private const string IDLE_ANIMATION = "IsIdle";
 
-    // Attack settings
-    [SerializeField] private float attackCooldown = 1f;
-    private float lastAttackTime = -1f;
+    // Audio clips for sound effects
+    [Header("Audio Clips")]
+    [SerializeField] private AudioClip attackClip;
+    [SerializeField] private AudioClip hurtClip;
+    [SerializeField] private AudioClip dieClip;
 
-    // Minimum distance to stay when attacking
-    [SerializeField] private float minimumAttackDistance = 2f;
+    // Reference to the enemy spawners
+    private GameObject deathCanvas; // Reference to the UI Canvas or GameObject to activate on death
 
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
-            currentHealth.Value = maxHealth;  // Initialize health for the server
+            currentHealth.Value = maxHealth;
         }
 
-        // Ensure the animator reference is set in the inspector
-        if (enemyAnimator == null)
-        {
-            Debug.LogError("Animator reference is not assigned! Please drag the Animator in the inspector.");
-        }
-
-        // Set up the player reference
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             playerTransform = player.transform;
         }
 
-        UpdateAnimationState();  // Initialize animation state
+        // Find the death canvas in the scene
+        deathCanvas = GameObject.Find(canvaName); // You can change "DeathCanvas" to whatever name the Canvas has in your scene
+        if (deathCanvas == null)
+        {
+            Debug.LogError("DeathCanvas not found in the scene.");
+        }
+
+        UpdateAnimationState();
     }
 
     private void Update()
     {
-        if (isDead) return;  // Prevent further logic if the enemy is dead
+        if (isDead) return;
 
-        // Update health bar fill
         UpdateHealthBar();
 
         if (playerTransform != null)
@@ -87,7 +91,7 @@ public class EnemyHealth : NetworkBehaviour
 
     private void FollowPlayer()
     {
-        if (!isAttacking && !isDead)  // Prevent movement if the enemy is dead
+        if (!isAttacking && !isDead)
         {
             Vector3 direction = (playerTransform.position - transform.position).normalized;
             float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
@@ -104,11 +108,17 @@ public class EnemyHealth : NetworkBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (isDead) return;  // Prevent damage if the enemy is already dead
+        if (isDead) return;
 
         if (IsServer)
         {
             currentHealth.Value -= damage;
+
+            // Play hurt sound
+            if (hurtClip != null)
+            {
+                PlaySound(hurtClip);
+            }
 
             if (currentHealth.Value > 0)
             {
@@ -141,54 +151,50 @@ public class EnemyHealth : NetworkBehaviour
     {
         Debug.Log("Enemy died!");
 
+        // Play die sound
+        if (dieClip != null)
+        {
+            PlaySound(dieClip);
+        }
+
         if (enemyAnimator != null)
         {
-            enemyAnimator.SetTrigger(DIE_ANIMATION);  // Trigger death animation
+            enemyAnimator.SetTrigger(DIE_ANIMATION);
         }
 
         isWalking = false;
         isAttacking = false;
 
-        // Optionally disable colliders, rigidbody or other interactions
         Collider collider = GetComponent<Collider>();
         if (collider != null)
         {
             collider.enabled = false;
         }
 
-        Destroy(gameObject, delay);  // Adjust the delay to match the length of your death animation
-    }
+        // Activate the death UI (Canvas or GameObject)
+        ShowDeathUI();
 
-    public void StartWalking()
-    {
-        if (!isDead)
-        {
-            isWalking = true;
-            UpdateAnimationState();
-        }
-    }
-
-    public void StopWalking()
-    {
-        if (!isDead)
-        {
-            isWalking = false;
-            UpdateAnimationState();
-        }
+        Destroy(gameObject, delay);
     }
 
     public void StartAttacking()
     {
-        if (!isDead)  // Prevent attacking if dead
+        if (!isDead)
         {
             isAttacking = true;
             UpdateAnimationState();
+
+            // Play attack sound
+            if (attackClip != null)
+            {
+                PlaySound(attackClip);
+            }
 
             if (playerTransform != null)
             {
                 if (Vector3.Distance(transform.position, playerTransform.position) <= attackRange)
                 {
-                    playerTransform.GetComponent<PlayerHealth>().TakeDamage(Damage);
+                    playerTransform.GetComponent<PlayerHealth>().TakeDamage(damage);
                     lastAttackTime = Time.time;
                 }
             }
@@ -212,8 +218,19 @@ public class EnemyHealth : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkDespawn()
+    private void PlaySound(AudioClip clip)
     {
-        // Handle any cleanup or network despawn logic
+        // Use PlayClipAtPoint for 3D sound placement
+        AudioSource.PlayClipAtPoint(clip, transform.position);
+    }
+
+    // Method to activate the death UI (Canvas or GameObject)
+    private void ShowDeathUI()
+    {
+        if (deathCanvas != null)
+        {
+            // Set the death canvas or GameObject active
+            deathCanvas.SetActive(true);
+        }
     }
 }

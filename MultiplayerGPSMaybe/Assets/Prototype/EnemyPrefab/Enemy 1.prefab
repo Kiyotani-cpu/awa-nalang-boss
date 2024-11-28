@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3220839299
+  GlobalObjectIdHash: 2091078202
   InScenePlacedSourceGlobalObjectIdHash: 2091078202
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -148,12 +148,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   delay: 1.51
+  damage: 5
+  canvaName: Level2
   healthBarFill: {fileID: 6175948978413836046}
   enemyAnimator: {fileID: 4811434998328517469}
   moveSpeed: 3
-  attackRange: 10
+  attackRange: 4
   attackCooldown: 1
   minimumAttackDistance: 4
+  attackClip: {fileID: 8300000, guid: 0bffaeb3f64bde242bed43847a909aa5, type: 3}
+  hurtClip: {fileID: 8300000, guid: a43676996a8f2494da8684869e04a7e4, type: 3}
+  dieClip: {fileID: 8300000, guid: 56678c380259f8d458a119dbd8834f9e, type: 3}
 --- !u!136 &7997282235316768156
 CapsuleCollider:
   m_ObjectHideFlags: 0
