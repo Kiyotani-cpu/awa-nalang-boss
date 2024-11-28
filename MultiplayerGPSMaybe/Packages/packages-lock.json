@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "com.nianticlabs.lightship": {
-      "version": "file:C:/Users/MyPC/Documents/GitHub/awa-nalang-boss/Yard2_Horizontal_Still/ardk-upm-3.3.0.tgz",
+      "version": "file:C:/Users/eo30e/Downloads/ardk-upm-3.3.0/package",
       "depth": 0,
-      "source": "local-tarball",
+      "source": "local",
       "dependencies": {
         "com.unity.editorcoroutines": "1.0.0",
         "com.unity.xr.arfoundation": "5.1.0",
@@ -16,9 +16,9 @@
       }
     },
     "com.nianticlabs.lightship.sharedar": {
-      "version": "file:C:/Users/MyPC/Documents/GitHub/awa-nalang-boss/Yard2_Horizontal_Still/sharedar-upm-3.3.0.tgz",
+      "version": "file:C:/Users/eo30e/Downloads/package",
       "depth": 0,
-      "source": "local-tarball",
+      "source": "local",
       "dependencies": {
         "com.nianticlabs.lightship": "3.3.0-2402121803",
         "com.unity.netcode.gameobjects": "1.2.0"
