@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6010774665351943056}
   - component: {fileID: 604043749457561817}
   m_Layer: 6
-  m_Name: Enemy 2
+  m_Name: Lilom Level 1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,15 +145,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bf3bef908e4afa47ad433b4b0e9172c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathCanvasName: Level2
   maxHealth: 100
   delay: 1.09
-  damage: 8
-  canvaName: Level3
+  damage: 5
   healthBarFill: {fileID: 8089643884709331761}
   enemyAnimator: {fileID: 1692632479372662221}
   moveSpeed: 3
   attackRange: 4
-  attackCooldown: 1
+  attackCooldown: 1.5
   minimumAttackDistance: 4
   attackClip: {fileID: 8300000, guid: 0bffaeb3f64bde242bed43847a909aa5, type: 3}
   hurtClip: {fileID: 8300000, guid: a43676996a8f2494da8684869e04a7e4, type: 3}

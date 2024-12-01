@@ -1,15 +1,13 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Unity.Netcode;
+using UnityEngine.UI;
 
 public class EnemyHealth : NetworkBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
     private NetworkVariable<int> currentHealth = new NetworkVariable<int>();
 
-    [SerializeField] private float delay = 1.51f;
+    [SerializeField] private int maxHealth = 100;
     [SerializeField] private int damage = 10;
-    [SerializeField] private string canvaName;
     [SerializeField] private Image healthBarFill;
 
     [SerializeField] private Animator enemyAnimator;
@@ -38,8 +36,10 @@ public class EnemyHealth : NetworkBehaviour
     [SerializeField] private AudioClip hurtClip;
     [SerializeField] private AudioClip dieClip;
 
-    // Reference to the enemy spawners
-    private GameObject deathCanvas; // Reference to the UI Canvas or GameObject to activate on death
+    private void Awake()
+    {
+        // No need for death canvas logic, just remove the related code
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -52,13 +52,6 @@ public class EnemyHealth : NetworkBehaviour
         if (player != null)
         {
             playerTransform = player.transform;
-        }
-
-        // Find the death canvas in the scene
-        deathCanvas = GameObject.Find(canvaName); // You can change "DeathCanvas" to whatever name the Canvas has in your scene
-        if (deathCanvas == null)
-        {
-            Debug.LogError("DeathCanvas not found in the scene.");
         }
 
         UpdateAnimationState();
@@ -171,10 +164,9 @@ public class EnemyHealth : NetworkBehaviour
             collider.enabled = false;
         }
 
-        // Activate the death UI (Canvas or GameObject)
-        ShowDeathUI();
-
-        Destroy(gameObject, delay);
+        // No death canvas logic now, just destroy the object after a delay
+        Destroy(gameObject, 1.51f); // Adjust delay if needed
+        GameManager.Instance.LoadLevelCompleteScene();
     }
 
     public void StartAttacking()
@@ -222,15 +214,5 @@ public class EnemyHealth : NetworkBehaviour
     {
         // Use PlayClipAtPoint for 3D sound placement
         AudioSource.PlayClipAtPoint(clip, transform.position);
-    }
-
-    // Method to activate the death UI (Canvas or GameObject)
-    private void ShowDeathUI()
-    {
-        if (deathCanvas != null)
-        {
-            // Set the death canvas or GameObject active
-            deathCanvas.SetActive(true);
-        }
     }
 }

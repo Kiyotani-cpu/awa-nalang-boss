@@ -7,7 +7,7 @@ public class HomeScreen : MonoBehaviour
     {
         Debug.Log("Open NextScene");
         // Load the game scene
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("LevelSelectScene");
     }
 
 

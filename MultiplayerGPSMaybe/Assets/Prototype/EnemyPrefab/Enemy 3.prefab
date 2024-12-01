@@ -145,15 +145,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bf3bef908e4afa47ad433b4b0e9172c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathCanvasName: Victory
   maxHealth: 100
   delay: 1.35
   damage: 10
-  canvaName: Victory
   healthBarFill: {fileID: 6528382234865466146}
   enemyAnimator: {fileID: 7430087374911546115}
   moveSpeed: 3
-  attackRange: 10
-  attackCooldown: 1
+  attackRange: 4
+  attackCooldown: 1.8
   minimumAttackDistance: 4
   attackClip: {fileID: 8300000, guid: 0bffaeb3f64bde242bed43847a909aa5, type: 3}
   hurtClip: {fileID: 8300000, guid: a43676996a8f2494da8684869e04a7e4, type: 3}

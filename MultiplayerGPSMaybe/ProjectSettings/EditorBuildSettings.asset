@@ -9,11 +9,23 @@ EditorBuildSettings:
     path: Assets/Scenes/HomeScene.unity
     guid: 9faafbaae52142b408b5c3ed424eda2f
   - enabled: 1
+    path: Assets/Scenes/LevelSelectScene.unity
+    guid: dc7d01be44e18d742829061966ae38b3
+  - enabled: 1
+    path: Assets/Scenes/GameSceneLevel1.unity
+    guid: 1e0be76646ef2ec47b9df5a7b9016b18
+  - enabled: 1
+    path: Assets/Scenes/GameSceneLevel2.unity
+    guid: 4c2b4d95b227c5e419cd4332b54b95b4
+  - enabled: 1
+    path: Assets/Scenes/GameSceneLevel3.unity
+    guid: d913fd086d9809442a2b1fc83069fded
+  - enabled: 1
     path: Assets/Scenes/LoadScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Game.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Victory.unity
+    guid: 572d717c91d164e4c862cb54c5ab8c72
   m_configObjects:
     Niantic.Lightship.AR.LightshipSettings: {fileID: 11400000, guid: 8928b140f319dbf48a9bb39270e595a4, type: 2}
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 8e257b9c17ce98c469bfa4e6ef74582f, type: 2}

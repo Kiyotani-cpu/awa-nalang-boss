@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 1606545209002200192}
   - component: {fileID: 5775084086298207092}
   m_Layer: 6
-  m_Name: Enemy 1
+  m_Name: Sidlak Level 2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,15 +146,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bf3bef908e4afa47ad433b4b0e9172c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathCanvasName: Level3
   maxHealth: 100
   delay: 1.51
-  damage: 5
-  canvaName: Level2
+  damage: 8
   healthBarFill: {fileID: 6175948978413836046}
   enemyAnimator: {fileID: 4811434998328517469}
   moveSpeed: 3
   attackRange: 4
-  attackCooldown: 1
+  attackCooldown: 2
   minimumAttackDistance: 4
   attackClip: {fileID: 8300000, guid: 0bffaeb3f64bde242bed43847a909aa5, type: 3}
   hurtClip: {fileID: 8300000, guid: a43676996a8f2494da8684869e04a7e4, type: 3}
